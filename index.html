@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de SLA e Capacidade </title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #333;
+        }
+        
+        .header h1 {
+            color: #4a5568;
+            margin-bottom: 10px;
+        }
+        
+        .alert {
+            background: #48bb78;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .card h3 {
+            color: #2d3748;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .priority-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 5px solid;
+        }
+        
+        .alta { border-left-color: #e53e3e; background: #fed7d7; }
+        .media { border-left-color: #dd6b20; background: #feebc8; }
+        .baixa { border-left-color: #38a169; background: #c6f6d5; }
+        .emergencial { border-left-color: #9f7aea; background: #e9d8fd; }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .inline-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .calculated {
+            background: #e6fffa !important;
+            border-color: #38b2ac !important;
+            font-weight: bold;
+        }
+        
+        .calculate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            margin: 20px 0;
+            transition: transform 0.2s ease;
+        }
+        
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .results {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+        }
+        
+        .results h3 {
+            color: white;
+            margin-bottom: 20px;
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .result-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .result-item .value {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .result-item .label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .formula-help {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .formula-help h4 {
+            color: #2d3748;
+            margin-bottom: 15px;
+        }
+        
+        .formula-help code {
+            background: #edf2f7;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .comparison-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid;
+        }
+        
+        .atual { border-color: #e53e3e; }
+        .otimizado { border-color: #48bb78; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛠️ Calculadora de SLA e Capacidade - VERSÃO </h1>
+            <p>Agora com a lógica correta: SLA maior = Tempo de execução menor</p>
+        </div>
+        
+        <div class="alert">
+            ✅ LÓGICA CORRIGIDA: Aumentar SLA → Reduz tempo de execução → Menos técnicos necessários
+        </div>
+        
+        <div class="grid">
+            <div class="card">
+                <h3>⚙️ Parâmetros de Capacidade</h3>
+                <div class="input-group">
+                    <label>Número de Técnicos:</label>
+                    <input type="number" id="numTecnicos" value="8">
+                </div>
+                <div class="input-group">
+                    <label>Horas por Técnico/Dia:</label>
+                    <input type="number" id="horasDia" value="8">
+                </div>
+                <div class="input-group">
+                    <label>Dias Úteis/Mês:</label>
+                    <input type="number" id="diasMes" value="22">
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>📊 Simulação de SLAs</h3>
+                
+                <div class="priority-section emergencial">
+                    <strong>Emergencial (5h fixo)</strong>
+                    <div class="input-group">
+                        <label>Chamados/Mês:</label>
+                        <input type="number" id="emergencialQtd" value="0.65" step="0.01">
+                    </div>
+                </div>
+                
+                <div class="priority-section alta">
+                    <strong>Alta Prioridade</strong>
+                    <div class="input-group">
+                        <label>Chamados/Mês:</label>
+                        <input type="number" id="altaQtd" value="53.15" step="0.01">
+                    </div>
+                    <div class="inline-inputs">
+                        <div class="input-group">
+                            <label>SLA (h):</label>
+                            <input type="number" id="altaSLA" value="24" step="1">
+                        </div>
+                        <div class="input-group">
+                            <label>Tempo Base:</label>
+                            <input type="number" id="altaBase" value="24" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label>Tempo Calc:</label>
+                            <input type="number" id="altaTempo" class="calculated" readonly>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="priority-section media">
+                    <strong>Média Prioridade</strong>
+                    <div class="input-group">
+                        <label>Chamados/Mês:</label>
+                        <input type="number" id="mediaQtd" value="20.35" step="0.01">
+                    </div>
+                    <div class="inline-inputs">
+                        <div class="input-group">
+                            <label>SLA (h):</label>
+                            <input type="number" id="mediaSLA" value="24" step="1">
+                        </div>
+                        <div class="input-group">
+                            <label>Tempo Base:</label>
+                            <input type="number" id="mediaBase" value="40" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label>Tempo Calc:</label>
+                            <input type="number" id="mediaTempo" class="calculated" readonly>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="priority-section baixa">
+                    <strong>Baixa Prioridade</strong>
+                    <div class="input-group">
+                        <label>Chamados/Mês:</label>
+                        <input type="number" id="baixaQtd" value="9.40" step="0.01">
+                    </div>
+                    <div class="inline-inputs">
+                        <div class="input-group">
+                            <label>SLA (h):</label>
+                            <input type="number" id="baixaSLA" value="24" step="1">
+                        </div>
+                        <div class="input-group">
+                            <label>Tempo Base:</label>
+                            <input type="number" id="baixaBase" value="56" step="0.1">
+                        </div>
+                        <div class="input-group">
+                            <label>Tempo Calc:</label>
+                            <input type="number" id="baixaTempo" class="calculated" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="results">
+                <h3>📈 Resultados da Simulação</h3>
+                <div class="result-grid">
+                    <div class="result-item">
+                        <div class="value" id="capacidadeTotal">1,408</div>
+                        <div class="label">Capacidade Total (h)</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="value" id="demandaTotal">2,619</div>
+                        <div class="label">Demanda Total (h)</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="value" id="utilizacao">186%</div>
+                        <div class="label">Utilização</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="value" id="tecnicosNecessarios">15</div>
+                        <div class="label">Técnicos Necessários</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="value" id="deficit">+7</div>
+                        <div class="label">Déficit/Sobra</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="value" id="status">⚠️</div>
+                        <div class="label">Status</div>
+                    </div>
+                </div>
+                
+                <button class="calculate-btn" onclick="calcular()">🔄 Recalcular</button>
+            </div>
+        </div>
+       
+        <div class="formula-help">
+            <h4>💡 Como Funciona :</h4>
+            <p><strong>Fórmula do Tempo de Execução:</strong> <code>Tempo_Execução = Tempo_Base × (24 ÷ SLA_Horas_Úteis)</code></p>
+            
+            <p><strong>Exemplos (Horas Úteis):</strong></p>
+            <ul>
+                <li><strong>SLA 24h úteis (3 dias):</strong> Base × (24÷24) = <strong>Base × 1.0</strong></li>
+                <li><strong>SLA 40h úteis (5 dias):</strong> Base × (24÷40) = <strong>Base × 0.6</strong></li>
+                <li><strong>SLA 56h úteis (7 dias):</strong> Base × (24÷56) = <strong>Base × 0.43</strong></li>
+            </ul>
+            
+         
+    <script>
+        function calcular() {
+            // Parâmetros de capacidade
+            const numTecnicos = parseFloat(document.getElementById('numTecnicos').value) || 8;
+            const horasDia = parseFloat(document.getElementById('horasDia').value) || 8;
+            const diasMes = parseFloat(document.getElementById('diasMes').value) || 22;
+            
+            // Dados das patologias
+            const emergencialQtd = parseFloat(document.getElementById('emergencialQtd').value) || 0;
+            const emergencialTempo = 5; // Fixo para emergencial
+            
+            const altaQtd = parseFloat(document.getElementById('altaQtd').value) || 0;
+            const altaSLA = parseFloat(document.getElementById('altaSLA').value) || 24;
+            const altaBase = parseFloat(document.getElementById('altaBase').value) || 24;
+            
+            const mediaQtd = parseFloat(document.getElementById('mediaQtd').value) || 0;
+            const mediaSLA = parseFloat(document.getElementById('mediaSLA').value) || 24;
+            const mediaBase = parseFloat(document.getElementById('mediaBase').value) || 40;
+            
+            const baixaQtd = parseFloat(document.getElementById('baixaQtd').value) || 0;
+            const baixaSLA = parseFloat(document.getElementById('baixaSLA').value) || 24;
+            const baixaBase = parseFloat(document.getElementById('baixaBase').value) || 56;
+            
+            // Calcular tempos de execução baseados no SLA
+            const altaTempo = altaBase * (24 / altaSLA);
+            const mediaTempo = mediaBase * (24 / mediaSLA);
+            const baixaTempo = baixaBase * (24 / baixaSLA);
+            
+            // Atualizar campos calculados
+            document.getElementById('altaTempo').value = altaTempo.toFixed(1);
+            document.getElementById('mediaTempo').value = mediaTempo.toFixed(1);
+            document.getElementById('baixaTempo').value = baixaTempo.toFixed(1);
+            
+            // Cálculos de capacidade
+            const capacidadeTotal = numTecnicos * horasDia * diasMes;
+            
+            const demandaEmergencial = emergencialQtd * emergencialTempo;
+            const demandaAlta = altaQtd * altaTempo;
+            const demandaMedia = mediaQtd * mediaTempo;
+            const demandaBaixa = baixaQtd * baixaTempo;
+            const demandaTotal = demandaEmergencial + demandaAlta + demandaMedia + demandaBaixa;
+            
+            const utilizacao = (demandaTotal / capacidadeTotal) * 100;
+            const tecnicosNecessarios = Math.ceil(demandaTotal / (horasDia * diasMes));
+            const deficit = tecnicosNecessarios - numTecnicos;
+            
+            // Atualizar resultados
+            document.getElementById('capacidadeTotal').textContent = capacidadeTotal.toLocaleString('pt-BR');
+            document.getElementById('demandaTotal').textContent = demandaTotal.toLocaleString('pt-BR', {maximumFractionDigits: 1});
+            document.getElementById('utilizacao').textContent = utilizacao.toFixed(0) + '%';
+            document.getElementById('tecnicosNecessarios').textContent = tecnicosNecessarios;
+            document.getElementById('deficit').textContent = deficit > 0 ? '+' + deficit : deficit;
+            
+            // Status
+            let statusElement = document.getElementById('status');
+            if (utilizacao <= 100) {
+                statusElement.textContent = '✅';
+                statusElement.title = 'Capacidade OK';
+            } else if (utilizacao <= 120) {
+                statusElement.textContent = '⚠️';
+                statusElement.title = 'Capacidade em alerta';
+            } else {
+                statusElement.textContent = '🚨';
+                statusElement.title = 'Capacidade crítica';
+            }
+            
+            // Atualizar comparação
+            document.getElementById('utilizacaoAtual').textContent = utilizacao.toFixed(0) + '%';
+            document.getElementById('tecnicosAtual').textContent = tecnicosNecessarios;
+        }
+        
+        // Calcular automaticamente quando valores mudarem
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', calcular);
+        });
+        
+        // Cálculo inicial
+        calcular();
+        
+        // Sugestão de otimização
+        function aplicarSugestao() {
+            document.getElementById('mediaSLA').value = 48;
+            document.getElementById('baixaSLA').value = 72;
+            calcular();
+        }
+    </script>
+</body>
+</html>
