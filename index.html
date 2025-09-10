@@ -6,8 +6,9 @@
     <title>Simulador de SLA - Impacto Real dos Prazos</title>
     <style>
         :root {
-            --primary: #3498db;
-            --secondary: #2c3e50;
+            --primary: #0a4d3a;       /* Verde escuro */
+            --secondary: #1a5f4a;     /* Verde médio */
+            --accent: #66ffaa;        /* Verde claro */
             --emergencial: #e74c3c;
             --alta: #f39c12;
             --media: #f1c40f;
@@ -41,7 +42,7 @@
         }
         
         .header h1 {
-            color: #2c3e50;
+            color: var(--primary);
             margin-bottom: 10px;
             font-size: 2.2rem;
         }
@@ -114,7 +115,7 @@
         
         .concept-box h4 {
             margin-top: 0;
-            color: #2c3e50;
+            color: var(--primary);
         }
         
         .glossary {
@@ -141,7 +142,7 @@
         
         .glossary-item h5 {
             margin: 0 0 8px 0;
-            color: #2c3e50;
+            color: var(--primary);
             font-size: 14px;
         }
         
@@ -160,7 +161,7 @@
         }
         
         .pressure-formula {
-            background: #2c3e50;
+            background: var(--secondary);
             color: white;
             padding: 15px;
             border-radius: 10px;
@@ -208,7 +209,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            color: #2c3e50;
+            color: var(--primary);
         }
         
         .priority-section {
@@ -342,7 +343,7 @@
         
         .results {
             grid-column: 1 / -1;
-            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
             border-radius: 15px;
             padding: 25px;
@@ -417,7 +418,7 @@
         
         .info-box {
             background: #ebf8ff;
-            border: 2px solid #4299e1;
+            border: 2px solid var(--primary);
             border-radius: 6px;
             padding: 10px;
             margin-top: 10px;
